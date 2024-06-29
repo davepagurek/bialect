@@ -93,7 +93,7 @@ export function GameView() {
 
   const showScores = useCallback(() => {
     setLoading(true)
-    const task = new Task(validPairsGenerator(initialLetters, words), 1 / 30)
+    const task = new Task(validPairsGenerator(initialLetters, words), 1 / 15)
     task.then((pairs) => {
       setAllScores(
         pairs.map((words) => {
