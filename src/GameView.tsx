@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useGameContext, Letter } from './GameContext.tsx'
 import { useDictionary } from './useDictionary.js'
-import { makeLetters, scoreWord, validPairs } from './game'
+import { makeLetters, scoreWord, validPairs, validPairsGenerator } from './game'
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd'
-import { Box, Button, Stack } from '@mui/material'
+import { Box, Button, CircularProgress, Stack } from '@mui/material'
 import { WordView } from './WordView.tsx'
+import { Task } from './Task.ts'
 
 export function GameView() {
   const {
@@ -38,6 +39,7 @@ export function GameView() {
   const [allScores, setAllScores] = useState<Array | undefined>(undefined)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [width, setWidth] = useState<number | undefined>(undefined)
+  const [loading, setLoading] = useState(false)
 
   useLayoutEffect(() => {
     const updateSize = () => {
@@ -86,9 +88,11 @@ export function GameView() {
   }, [wordA, wordB, handA, handB])
 
   const showScores = useCallback(() => {
-    setAllScores(
-      validPairs(initialLetters, words)
-        .map((words) => {
+    setLoading(true)
+    const task = new Task(validPairsGenerator(initialLetters, words), 1 / 30)
+    task.then((pairs) => {
+      setAllScores(
+        pairs.map((words) => {
           const [scoreA, scoreB] = words.map((w) =>
             scoreWord(
               w.split('').map((char) => initialLetters.find((l) => l.letter === char))
@@ -100,11 +104,20 @@ export function GameView() {
           }
         })
         .sort((a, b) => b.score - a.score)
-    )
+      )
+      setLoading(false)
+    })
   }, [initialLetters, words])
 
   let content
-  if (allScores) {
+  if (loading) {
+    content = (
+      <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+        <span>Submitting...</span>
+        <CircularProgress variant="indeterminate" />
+      </Stack>
+    )
+  } else if (allScores) {
     content = (
       <>
         <p>
@@ -141,6 +154,7 @@ export function GameView() {
           disabled={errorA || errorB || wordA.length === 0 || wordB.length === 0}
         >
           Submit
+          {wordA.length > 0 && wordB.length > 0 && !errorA && !errorB && ` (${scoreWord(wordA) + scoreWord(wordB)})`}
         </Button>
       </>
     )

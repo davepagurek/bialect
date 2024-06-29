@@ -93,6 +93,60 @@ export function validPairs(letters, dictionary) {
       pairs.push([wordA, wordB])
     }
   }
-  debugger
   return pairs
+}
+
+export function* wordsUsingLettersGenerator(letters, dictionary) {
+  const counts = {}
+  for (const letter of letters) {
+    counts[letter.letter] = (counts[letter.letter] || 0) + 1
+  }
+
+  const res = []
+  const matcher = new RegExp("\\b[" + letters.map((l) => l.letter).join('') + "]+\\b")
+  for (const word of dictionary.values()) {
+    if (matcher.exec(word)) {
+      const wordCounts = { ...counts }
+      let ok = true
+      for (let i = 0; i < word.length; i++) {
+        const char = word[i]
+        if (!wordCounts[char]) {
+          ok = false
+          break
+        }
+        wordCounts[char]--
+      }
+      if (ok) {
+        res.push(word)
+      }
+    }
+    yield undefined
+  }
+  return yield res
+}
+
+export function* validPairsGenerator(letters, dictionary) {
+  const pairs = []
+  let wordAs
+  const it = wordsUsingLettersGenerator(letters, dictionary)
+  do {
+    yield undefined
+    wordAs = it.next().value
+    if (wordAs) break
+  } while (true)
+  for (const wordA of wordAs) {
+    const remaining = remainingLetters(letters, wordA)
+    let wordBs
+    const it2 = wordsUsingLettersGenerator(remaining, dictionary)
+    do {
+      yield undefined
+      wordBs = it2.next().value
+      if (wordBs) break
+    } while (true)
+    for (const wordB of wordBs) {
+      pairs.push([wordA, wordB])
+      yield undefined
+    }
+  }
+  yield pairs
 }
