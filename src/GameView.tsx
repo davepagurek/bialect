@@ -159,7 +159,7 @@ export function GameView() {
               },
               height: `${width}px`,
               getFillColor: (_group, _label, { data: { x0: from, x1: to } }) => {
-                if (totalScore >= parseInt(from, 10) && totalScore <= parseInt(to, 10)) {
+                if (totalScore >= parseInt(from, 10) && totalScore < parseInt(to, 10)) {
                   return '#FB2'
                 } else {
                   return '#58F'
