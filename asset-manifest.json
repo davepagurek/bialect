@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/bialect/static/css/main.9b887cd2.css",
-    "main.js": "/bialect/static/js/main.5a615cdb.js",
+    "main.js": "/bialect/static/js/main.53e14ac5.js",
     "static/js/453.33e1ee33.chunk.js": "/bialect/static/js/453.33e1ee33.chunk.js",
     "index.html": "/bialect/index.html",
     "main.9b887cd2.css.map": "/bialect/static/css/main.9b887cd2.css.map",
-    "main.5a615cdb.js.map": "/bialect/static/js/main.5a615cdb.js.map",
+    "main.53e14ac5.js.map": "/bialect/static/js/main.53e14ac5.js.map",
     "453.33e1ee33.chunk.js.map": "/bialect/static/js/453.33e1ee33.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9b887cd2.css",
-    "static/js/main.5a615cdb.js"
+    "static/js/main.53e14ac5.js"
   ]
 }
