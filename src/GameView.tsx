@@ -6,6 +6,8 @@ import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd'
 import { Box, Button, CircularProgress, Stack } from '@mui/material'
 import { WordView } from './WordView.tsx'
 import { Task } from './Task.ts'
+import { HistogramChart } from '@carbon/charts-react'
+import '@carbon/charts/styles.css'
 
 export function GameView() {
   const {
@@ -40,6 +42,7 @@ export function GameView() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [width, setWidth] = useState<number | undefined>(undefined)
   const [loading, setLoading] = useState(false)
+  const [totalScore, setTotalScore] = useState(0)
 
   useLayoutEffect(() => {
     const updateSize = () => {
@@ -66,6 +69,7 @@ export function GameView() {
     const wordBStr = wordB.map((w) => w.letter).join('')
     setErrorA(wordAStr && !words.has(wordAStr))
     setErrorB(wordBStr && !words.has(wordBStr))
+    setTotalScore(scoreWord(wordA) + scoreWord(wordB))
   }, [wordA, wordB])
 
   const onDragEnd = useCallback<OnDragEndResponder>((result, _provided) => {
@@ -120,15 +124,57 @@ export function GameView() {
   } else if (allScores) {
     content = (
       <>
-        <p>
-          Your entry:&nbsp;
+        <h2>
             {wordA.map((l) => l.letter).join('')},&nbsp;
-            {wordB.map((l) => l.letter).join('')}
-            ({scoreWord(wordA) + scoreWord(wordB)})
-        </p>
-        {allScores.map(({ words: [a, b], score }, i) => (
-          <p key={i}>{a}, {b} ({score})</p>
-        ))}
+            {wordB.map((l) => l.letter).join('')}&nbsp;
+            <span style={{ color: 'green' }}>({totalScore})</span>
+        </h2>
+        <h3>
+          Your rank is {Math.round(allScores.map((v) => v.score).sort().indexOf(totalScore) / allScores.length * 100)}%
+        </h3>
+        <Box>
+          <HistogramChart
+            data={[
+              ...allScores.map((s) => ({ value: s.score, group: 'Everyone' })),
+            ]}
+            options={{
+              title: 'All Submissions',
+              axes: {
+                left: {
+                  title: 'Submissions',
+                  binned: true,
+                },
+                bottom: {
+                  title: 'Score',
+                  bins: 10,
+                  mapsTo: 'value',
+                  limitDomainToBins: true,
+                },
+              },
+              legend: {
+                enabled: false,
+              },
+              toolbar: {
+                enabled: false,
+              },
+              height: `${width}px`,
+              getFillColor: (_group, _label, { data: { x0: from, x1: to } }) => {
+                if (totalScore >= parseInt(from, 10) && totalScore <= parseInt(to, 10)) {
+                  return '#FB2'
+                } else {
+                  return '#58F'
+                }
+              }
+            }}
+          />
+        </Box>
+        <h3>Top Submissions</h3>
+        <Stack spacing={1}>
+          {allScores.slice(0, 10).map(({ words: [a, b], score }, i) => (
+            <p key={i}>{a}, {b} ({score})</p>
+          ))}
+        </Stack>
+        <h3>Play again tomorrow!</h3>
       </>
     )
   } else {
@@ -154,7 +200,7 @@ export function GameView() {
           disabled={errorA || errorB || wordA.length === 0 || wordB.length === 0}
         >
           Submit
-          {wordA.length > 0 && wordB.length > 0 && !errorA && !errorB && ` (${scoreWord(wordA) + scoreWord(wordB)})`}
+          {wordA.length > 0 && wordB.length > 0 && !errorA && !errorB && ` (${totalScore})`}
         </Button>
       </>
     )

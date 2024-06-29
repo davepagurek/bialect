@@ -1,5 +1,6 @@
 import { XORShift } from 'random-seedable'
 import { v4 } from 'uuid'
+import { uniqBy } from 'lodash'
 
 const interval = 1000 * 60 * 60 * 24 // 24 hours in milliseconds
 const startOfDay = Math.floor(Date.now() / interval) * interval
@@ -126,7 +127,7 @@ export function* wordsUsingLettersGenerator(letters, dictionary) {
 }
 
 export function* validPairsGenerator(letters, dictionary) {
-  const pairs = []
+  let pairs = []
   let wordAs
   const it = wordsUsingLettersGenerator(letters, dictionary)
   do {
@@ -148,5 +149,11 @@ export function* validPairsGenerator(letters, dictionary) {
       yield undefined
     }
   }
+  pairs = pairs.map(([a, b]) => {
+    if (a < b) return [a, b]
+    return [b, a]
+  })
+  yield undefined
+  pairs = uniqBy(pairs, ([a, b]) => `${a},${b}`)
   yield pairs
 }

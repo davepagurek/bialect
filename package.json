@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@carbon/charts-react": "^1.17.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@hello-pangea/dnd": "^16.6.0",
@@ -16,6 +17,7 @@
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.3.0",
     "gh-pages": "^6.1.1",
+    "lodash": "^4.17.21",
     "random-seedable": "^1.0.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
