@@ -1,23 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
+import { GameView } from './GameView.tsx' 
+import { GameContextProvider } from './GameContext.tsx';
+import { Stack } from '@mui/material';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <GameContextProvider>
+        <Stack maxWidth="600px" spacing={3} margin="20px auto" padding={1}>
+          <h1>Bialect</h1>
+          <GameView />
+        </Stack>
+      </GameContextProvider>
     </div>
   );
 }
