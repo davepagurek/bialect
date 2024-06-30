@@ -45,6 +45,7 @@ export function makeLetters() {
 }
 
 export function scoreWord(word) {
+  if (word.some((l) => !l)) debugger
   return word.reduce((acc, next) => acc + next.score, 0)
 }
 

@@ -38,10 +38,10 @@ export function GameView() {
 
   const [initialLetters, setInitialLetters] = useState<Letter[]>([])
   const { ready, words } = useDictionary()
-  const [allScores, setAllScores] = useState<Array | undefined>(undefined)
+  const [allScores, setAllScores] = useState<Array<any> | undefined>(undefined)
+  const [done, setDone] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [width, setWidth] = useState<number | undefined>(undefined)
-  const [loading, setLoading] = useState(false)
   const [totalScore, setTotalScore] = useState(0)
 
   useLayoutEffect(() => {
@@ -62,6 +62,24 @@ export function GameView() {
     setInitialLetters(hand)
     setHandA(hand.slice(0, 6))
     setHandB(hand.slice(6, 12))
+
+    const task = new Task(validPairsGenerator(hand, words), 1 / 60)
+    task.then((pairs) => {
+      setAllScores(
+        pairs.map((words) => {
+          const [scoreA, scoreB] = words.map((w) =>
+            scoreWord(
+              w.split('').map((char) => hand.find((l) => l.letter === char))
+            )
+          )
+          return {
+            words,
+            score: scoreA + scoreB,
+          }
+        })
+        .sort((a, b) => b.score - a.score)
+      )
+    })
   }, [ready])
 
   useEffect(() => {
@@ -92,45 +110,30 @@ export function GameView() {
   }, [wordA, wordB, handA, handB])
 
   const showScores = useCallback(() => {
-    setLoading(true)
-    const task = new Task(validPairsGenerator(initialLetters, words), 1 / 15)
-    task.then((pairs) => {
-      setAllScores(
-        pairs.map((words) => {
-          const [scoreA, scoreB] = words.map((w) =>
-            scoreWord(
-              w.split('').map((char) => initialLetters.find((l) => l.letter === char))
-            )
-          )
-          return {
-            words,
-            score: scoreA + scoreB,
-          }
-        })
-        .sort((a, b) => b.score - a.score)
-      )
-      setLoading(false)
-    })
-  }, [initialLetters, words])
+    setDone(true)
+  }, [])
 
   let content
-  if (loading) {
+  if (done && !allScores) {
     content = (
       <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
         <span>Submitting...</span>
         <CircularProgress variant="indeterminate" />
       </Stack>
     )
-  } else if (allScores) {
+  } else if (done && allScores) {
+    console.log([
+              ...allScores.map((s) => ({ value: s.score, group: 'Everyone' })),
+            ])
     content = (
       <>
         <h2>
-            {wordA.map((l) => l.letter).join('')},&nbsp;
-            {wordB.map((l) => l.letter).join('')}&nbsp;
-            <span style={{ color: 'green' }}>({totalScore})</span>
+          {wordA.map((l) => l.letter).join('')},&nbsp;
+          {wordB.map((l) => l.letter).join('')}&nbsp;
+          <span style={{ color: 'green' }}>({totalScore})</span>
         </h2>
         <h3>
-          Your rank is {Math.round(allScores.map((v) => v.score).sort().indexOf(totalScore) / allScores.length * 100)}%
+          Your rank is {Math.floor(100 - (allScores.map((v) => v.score).indexOf(totalScore) / allScores.length) * 100)}%
         </h3>
         <Box>
           <HistogramChart
@@ -158,7 +161,9 @@ export function GameView() {
                 enabled: false,
               },
               height: `${width}px`,
-              getFillColor: (_group, _label, { data: { x0: from, x1: to } }) => {
+              getFillColor: (_group, _label, { data }) => {
+                if (!data) return '#58F'
+                const { x0: from, x1: to } = data
                 if (totalScore >= parseInt(from, 10) && totalScore < parseInt(to, 10)) {
                   return '#FB2'
                 } else {
