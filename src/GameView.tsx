@@ -85,8 +85,8 @@ export function GameView() {
   useEffect(() => {
     const wordAStr = wordA.map((w) => w.letter).join('')
     const wordBStr = wordB.map((w) => w.letter).join('')
-    setErrorA(wordAStr && !words.has(wordAStr))
-    setErrorB(wordBStr && !words.has(wordBStr))
+    setErrorA(!!wordAStr && !words.has(wordAStr))
+    setErrorB(!!wordBStr && !words.has(wordBStr))
     setTotalScore(scoreWord(wordA) + scoreWord(wordB))
   }, [wordA, wordB])
 
@@ -213,7 +213,7 @@ export function GameView() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Stack spacing={allScores ? 4 : 1} ref={containerRef}>
+      <Stack spacing={(done && allScores) ? 4 : 1} ref={containerRef}>
         {content}
       </Stack>
     </DragDropContext>
