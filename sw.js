@@ -6,7 +6,7 @@ function isCacheable(request) {
 async function cacheFirstWithRefresh(request) {
   const fetchResponsePromise = fetch(request).then(async (networkResponse) => {
     if (networkResponse.ok) {
-      const cache = await caches.open("Bialect_2");
+      const cache = await caches.open("Bialect_3");
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
