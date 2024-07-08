@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/bialect/static/css/main.29ea70b2.css",
-    "main.js": "/bialect/static/js/main.c46d3cfb.js",
-    "static/js/453.33e1ee33.chunk.js": "/bialect/static/js/453.33e1ee33.chunk.js",
-    "index.html": "/bialect/index.html",
-    "main.29ea70b2.css.map": "/bialect/static/css/main.29ea70b2.css.map",
-    "main.c46d3cfb.js.map": "/bialect/static/js/main.c46d3cfb.js.map",
-    "453.33e1ee33.chunk.js.map": "/bialect/static/js/453.33e1ee33.chunk.js.map"
+    "main.css": "https://davepagurek.github.io/bialect/static/css/main.29ea70b2.css",
+    "main.js": "https://davepagurek.github.io/bialect/static/js/main.fa44ea12.js",
+    "static/js/453.33e1ee33.chunk.js": "https://davepagurek.github.io/bialect/static/js/453.33e1ee33.chunk.js",
+    "index.html": "https://davepagurek.github.io/bialect/index.html",
+    "main.29ea70b2.css.map": "https://davepagurek.github.io/bialect/static/css/main.29ea70b2.css.map",
+    "main.fa44ea12.js.map": "https://davepagurek.github.io/bialect/static/js/main.fa44ea12.js.map",
+    "453.33e1ee33.chunk.js.map": "https://davepagurek.github.io/bialect/static/js/453.33e1ee33.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.29ea70b2.css",
-    "static/js/main.c46d3cfb.js"
+    "static/js/main.fa44ea12.js"
   ]
 }
