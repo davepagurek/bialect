@@ -2,8 +2,22 @@ import { XORShift } from 'random-seedable'
 import { v4 } from 'uuid'
 import { uniqBy } from 'lodash'
 
-const interval = 1000 * 60 * 60 * 24 // 24 hours in milliseconds
-const startOfDay = Math.floor(Date.now() / interval) * interval
+// const interval = 1000 * 60 * 60 * 24 // 24 hours in milliseconds
+// const oldStartOfDay = Math.floor(Date.now() / interval) * interval
+
+const now = new Date()
+
+// Get the current date in the user's local time zone
+const localYear = now.getFullYear()
+const localMonth = now.getMonth()
+const localDate = now.getDate()
+
+// Create a new date object for midnight local time
+const localMidnight = new Date(localYear, localMonth, localDate)
+
+// Convert local midnight to UTC time in milliseconds to use as seed
+const startOfDay = localMidnight.getTime() - (localMidnight.getTimezoneOffset() * 60 * 1000)
+// console.log(oldStartOfDay, startOfDay)
 
 export function makeLetters() {
   const random = new XORShift(startOfDay + 2)
